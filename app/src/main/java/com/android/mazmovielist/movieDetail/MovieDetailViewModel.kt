@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 
 class MovieDetailViewModel : ViewModel() {
 
+//    data members
     lateinit var navigator: MovieDetailNavigator
     private val mIsLoading = ObservableBoolean()
 
@@ -30,12 +31,14 @@ class MovieDetailViewModel : ViewModel() {
         navigator.favouriteClicked()
     }
 
+//    update to room DB
     fun updateMovie(moviesDao: MoviesDao, movie: ResultsItem) {
         viewModelScope.launch {
             updateMovieToDB(moviesDao, movie)
         }
     }
 
+//    room db method
     private suspend fun updateMovieToDB(moviesDao: MoviesDao, item: ResultsItem) {
         setIsLoading(true)
         withContext(Dispatchers.Default) {

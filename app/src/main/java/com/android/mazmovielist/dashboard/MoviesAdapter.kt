@@ -51,6 +51,7 @@ class MoviesAdapter(
     inner class ViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+//        setting data
         fun setData(
             movie: ResultsItem,
             position: Int

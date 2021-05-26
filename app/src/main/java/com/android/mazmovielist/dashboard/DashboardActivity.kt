@@ -25,6 +25,7 @@ import java.io.Serializable
 
 class DashboardActivity : AppCompatActivity(), DashboardViewModel.DashboardNavigator {
 
+//    data members
     lateinit var binding: ActivityDashboardBinding
     lateinit var viewModel: DashboardViewModel
     private val refreshReqCode = 101
@@ -47,6 +48,7 @@ class DashboardActivity : AppCompatActivity(), DashboardViewModel.DashboardNavig
 
     }
 
+//    init method
     private fun setupScreen() {
         sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE);
         initDb()
@@ -55,6 +57,7 @@ class DashboardActivity : AppCompatActivity(), DashboardViewModel.DashboardNavig
         viewModel.getMoviesListFromDB(moviesDao)
     }
 
+//    adapter for recycler view
     private fun setAdapter() {
         with(binding.rvMovies) {
             layoutManager = GridLayoutManager(this@DashboardActivity, 2)
@@ -94,6 +97,7 @@ class DashboardActivity : AppCompatActivity(), DashboardViewModel.DashboardNavig
         })
     }
 
+//    checking/storing for number of clickable movies
     private fun checkSharedPrefs(movie: ResultsItem) {
         var storedIds = sharedPreferences.getString(prefKeyCounts, null)
         if (storedIds != null) {
@@ -129,12 +133,14 @@ class DashboardActivity : AppCompatActivity(), DashboardViewModel.DashboardNavig
         }
     }
 
+//    open movies detail screen
     private fun navigateToDetailScreen(movie: ResultsItem) {
         val intent = Intent(this, MovieDetailActivity::class.java)
         intent.putExtra("movie", movie as Serializable)
         startActivityForResult(intent, refreshReqCode)
     }
 
+//    observing live data
     private fun observerMoviesList() {
         val moviesObserver = Observer<MutableList<ResultsItem>> { moviesList ->
             viewModel.addMoviesToDb(moviesList, moviesDao)
@@ -143,6 +149,7 @@ class DashboardActivity : AppCompatActivity(), DashboardViewModel.DashboardNavig
         viewModel.moviesList.observe(this, moviesObserver)
     }
 
+//    init db
     private fun initDb() {
         val db: MoviesDatabase =
             Room.databaseBuilder(application, MoviesDatabase::class.java, "appDB")
@@ -150,6 +157,7 @@ class DashboardActivity : AppCompatActivity(), DashboardViewModel.DashboardNavig
         moviesDao = db.moviesDao()
     }
 
+//    populating recycler view
     override fun addDataToAdapter(entries: MutableList<ResultsItem>) {
         (binding.rvMovies.adapter as MoviesAdapter).addItemList(entries)
     }

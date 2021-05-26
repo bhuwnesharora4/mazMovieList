@@ -17,27 +17,31 @@ import java.net.URLConnection
 
 class DashboardViewModel : ViewModel() {
 
+//    data members
     var currentPage: Int = 1
     var moviesList: MutableLiveData<MutableList<ResultsItem>> = MutableLiveData()
     lateinit var navigator: DashboardNavigator
     var totalPages: Int = 100
     private val mIsLoading = ObservableBoolean()
-
     private val moviesURL =
         "http://api.themoviedb.org/3/movie/popular?api_key=f8c2fb3301267b649b40cb8d22023776"
 
+//    interface to communicate with activity/ui
     interface DashboardNavigator {
         fun addDataToAdapter(entries: MutableList<ResultsItem>)
     }
 
+//    getting loader status
     fun getIsLoading(): ObservableBoolean {
         return mIsLoading
     }
 
+//    setting loader status
     fun setIsLoading(isLoading: Boolean) {
         mIsLoading.set(isLoading)
     }
 
+//    network method to get movies list
     fun getMoviesList() {
         setIsLoading(true)
         viewModelScope.launch {
@@ -54,6 +58,7 @@ class DashboardViewModel : ViewModel() {
 
     }
 
+//    network call
     private suspend fun getContent(conn: URLConnection): String {
         var result: String
         withContext(Dispatchers.IO) {
@@ -63,6 +68,7 @@ class DashboardViewModel : ViewModel() {
         return result
     }
 
+//    converting stream to readable data
     @Throws(UnsupportedEncodingException::class)
     private fun convertStreamToString(input: InputStream): String {
         val reader = BufferedReader(InputStreamReader(input, "UTF-8"))
@@ -84,6 +90,7 @@ class DashboardViewModel : ViewModel() {
         return sb.toString()
     }
 
+//    getting list from Room DB
     fun getMoviesListFromDB(moviesDao: MoviesDao) {
         viewModelScope.launch {
             val entries = getMoviesFromDB(moviesDao)
@@ -96,6 +103,7 @@ class DashboardViewModel : ViewModel() {
         }
     }
 
+//    room db function
     private suspend fun getMoviesFromDB(moviesDao: MoviesDao): MutableList<ResultsItem> {
         setIsLoading(true)
         var list: MutableList<ResultsItem>
@@ -106,10 +114,12 @@ class DashboardViewModel : ViewModel() {
         return list
     }
 
+//    adding movies to Room db
     fun addMoviesToDb(moviesList: MutableList<ResultsItem>, moviesDao: MoviesDao) {
         viewModelScope.launch { addMoviesToDB(moviesList, moviesDao) }
     }
 
+//    room db function
     private suspend fun addMoviesToDB(
         moviesList: MutableList<ResultsItem>,
         moviesDao: MoviesDao
@@ -119,12 +129,14 @@ class DashboardViewModel : ViewModel() {
         }
     }
 
+//    update to Room DB
     fun updateMovie(moviesDao: MoviesDao, item: ResultsItem) {
         viewModelScope.launch {
             updateMovieToDB(moviesDao, item)
         }
     }
 
+//    room db function
     private suspend fun updateMovieToDB(moviesDao: MoviesDao, item: ResultsItem) {
         withContext(Dispatchers.Default) {
             moviesDao.updateMovie(item)

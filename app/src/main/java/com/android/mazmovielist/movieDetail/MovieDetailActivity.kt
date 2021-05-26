@@ -18,8 +18,9 @@ import com.bumptech.glide.Glide
 
 class MovieDetailActivity : AppCompatActivity(), MovieDetailViewModel.MovieDetailNavigator {
 
-    lateinit var binding: ActivityMovieDetailBinding
-    lateinit var viewModel: MovieDetailViewModel
+//    data members
+    private lateinit var binding: ActivityMovieDetailBinding
+    private lateinit var viewModel: MovieDetailViewModel
     private val refreshReqCode = 101
     private lateinit var moviesDao: MoviesDao
     private lateinit var movie: ResultsItem
@@ -38,6 +39,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailViewModel.MovieDetai
 
     }
 
+//    init method
     private fun setupScreen() {
         initDb()
         movie = intent.getSerializableExtra("movie") as ResultsItem
@@ -45,6 +47,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailViewModel.MovieDetai
         updateUI(movie)
     }
 
+//    init room db
     private fun initDb() {
         val db: MoviesDatabase =
             Room.databaseBuilder(application, MoviesDatabase::class.java, "appDB")
@@ -52,6 +55,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailViewModel.MovieDetai
         moviesDao = db.moviesDao()
     }
 
+//    updating UI from intent value
     private fun updateUI(movie: ResultsItem) {
         Glide.with(this)
             .load(imageBasePath + "${movie.posterPath}")
